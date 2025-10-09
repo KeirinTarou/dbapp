@@ -1,11 +1,49 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>Flask Test</title>
-</head>
-<body>
-    <h1>Hello, Flask!</h1>
-    <p>動作確認用のシンプルなページです。</p>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}Sample Page{% endblock %}
+{% block contents %}
+<main class="page page--sql">
+    <section class="section section--intro">
+        <h1 class="heading heading--xl">お笑いSQL道場</h1>
+        <p class="text text--lead">入力したクエリを実行し、結果セットを表示します。</p>
+    </section>
+
+    <section class="section section--query">
+        <h2 class="heading heading--lg">クエリを入力</h2>
+        <div class="form form--query">
+            <textarea name="sql_query" id="sql_query" class="textarea textarea--sql" placeholder="SELECT文を入力"></textarea>
+        </div>
+    </section>
+
+    <section class="section section--result">
+        <h2 class="heading heading--lg">実行結果</h2>
+        <div class="table-container">
+            <table class="table table--result">
+                <thead>
+                    <tr>
+                        <th>EmployeeID</th>
+                        <th>EmployeeName</th>
+                        <th>EmployeeStatus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>ち～ん（笑）</td>
+                        <td>Fired!!</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>( ´,_ゝ`)ﾌﾟｯ</td>
+                        <td>Fired!!</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>( ´_ゝ`)ﾌｰﾝ</td>
+                        <td>Fired!!</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+{% endblock %}

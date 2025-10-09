@@ -1,4 +1,5 @@
-test_dbapp_env/
+test_dbapp_env/*
 memo.md
-*/__pycache__
+__pycache__/
+.py[cod]
 jquery*
