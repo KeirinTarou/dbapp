@@ -16,6 +16,12 @@ TEST_QUERY_2 = """
 DESC Employees;
 """
 
+TABLE_NAMES = [
+    "BelongTo", "Categories", "CustomerClasses", "Customers", 
+    "Departments", "Employees", "Prefecturals", "Products", 
+    "Salary", "Sales"
+]
+
 def fetch_all(query: str):
     """クエリを渡して全件取得する
     """
