@@ -12,6 +12,10 @@ LIMIT
 ;
 """
 
+TEST_QUERY_2 = """
+DESC Employees;
+"""
+
 def fetch_all(query: str):
     """クエリを渡して全件取得する
     """
@@ -24,3 +28,9 @@ def fetch_all(query: str):
             rows = cur.fetchall()
             # カラム名のリストと`Row`オブジェクトのリストを返却
             return columns, rows
+
+def describe_table(table_name: str):
+    """`DESC`コマンドを使ってテーブル構造を取得
+    """
+    query = f"DESC {table_name};"
+    return fetch_all(query)
