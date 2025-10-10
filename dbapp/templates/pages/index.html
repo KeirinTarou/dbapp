@@ -26,9 +26,21 @@
 
     <section class="section section--query">
         <h2 class="heading heading--lg">クエリを入力</h2>
-        <div class="form form--query">
-            <textarea name="sql_query" id="sql_query" class="textarea textarea--sql" placeholder="SELECT文を入力"></textarea>
-        </div>
+        <form class="form form--query">
+            <textarea
+                name="sql_query" 
+                id="sql_query" 
+                class="textarea textarea--sql" 
+                placeholder="SELECT文を入力">
+            </textarea>
+            <div class="form-actions">
+                <button 
+                    type="submit" 
+                    class="btn btn--execute"
+                    title="入力したクエリを実行します。"
+                >クエリ実行</button>
+            </div>
+        </form>
     </section>
 
     <section class="section section--result">
