@@ -83,7 +83,6 @@
     border-collapse: separate;
     border-spacing: 0;
     border-radius: 12px;
-    overflow: hidden;
     font-size: 0.95rem;
     background-color: #fff;
 }
@@ -94,6 +93,9 @@
 
 /* テーブルヘッダー */
 .table--result thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
     background-color: #ffe4e1; /* パステルピンク */
     color: #ff5c8d;
     text-align: left;
@@ -117,8 +119,11 @@
 /* テーブルコンテナ（スクロール用） */
 .table-container {
     overflow-x: auto;
+    overflow-y: auto;
+    max-height: 600px;
     border-radius: 12px;
     margin-top: 0.5rem;
+    background-color: #fff;
 }
 
 /* ===== テーブルボディのストライプ ===== */
