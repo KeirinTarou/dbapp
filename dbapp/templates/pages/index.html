@@ -26,7 +26,7 @@
 
     <section class="section section--query">
         <h2 class="heading heading--lg">クエリを入力</h2>
-        <form class="form form--query">
+        <form class="form form--query" method="post" action="{{ url_for('index') }}">
             <textarea
                 name="sql_query" 
                 id="sql_query" 
