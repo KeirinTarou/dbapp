@@ -33,6 +33,16 @@
         $('form').on('submit', function() {
             editor.save(); // textareaの値にコピー
         });
+
+        $("#sql_query_wrapper").resizable({
+            handles: "s", // 下側だけリサイズ可
+            minHeight: 200, 
+            maxHeight: 600, 
+            resize: function(event, ui) {
+                // CodeMirrorの高さをラッパーdivに合わせる
+                editor.setSize(null, ui.size.height);
+            }
+        });
     });
 
 }
