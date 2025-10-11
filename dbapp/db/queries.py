@@ -1,4 +1,5 @@
 from db.connection import get_connection
+import re
 
 TEST_QUERY = """
 SELECT
@@ -40,3 +41,13 @@ def describe_table(table_name: str):
     """
     query = f"DESC {table_name};"
     return fetch_all(query)
+
+def sanitize_sql(sql_query: str) -> str:
+    """SQL文からコメントや不要な空白を除去する
+    """
+    # ブロックコメント削除
+    sql = re.sub(r'/\*.*?\*/', '', sql_query, flags=re.DOTALL)
+    # 行コメント削除
+    sql = re.sub(r'--.*$', '', sql, flags=re.MULTILINE)
+    # 前後の空白除去
+    return sql.strip()
