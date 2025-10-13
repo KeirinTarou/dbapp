@@ -3,11 +3,18 @@ from flask import (
     url_for, session)
 import pyodbc
 import db.queries as db
+import re
+from datetime import datetime
+import os
 
 app = Flask(__name__)
 
 # セッション用の秘密鍵設定
 app.secret_key = "kps"
+
+# クエリ保存用フォルダを用意
+STORAGE_DIR = os.path.join(os.getcwd(), "storage", "queries")
+os.makedirs(STORAGE_DIR, exist_ok=True)
 
 # クエリ実行失敗時返却用データ（笑）
 FAILED_COLUMNS = ["( ´,_ゝ`)", "ち～ん（笑）"]
@@ -37,30 +44,62 @@ def index():
                 session["sql_query_height"] = float(sql_query_height)
                 # 値がおかしかったらデフォルト値をセット
             except ValueError:
-                session["sql_query_height"] = DEFAULT_EDITOR_HEIGHT 
+                session["sql_query_height"] = DEFAULT_EDITOR_HEIGHT
+        
+        # 「保存」ボタンが押された
+        if "save" in request.form:
+            if not sql_query:
+                flash("( ´,_ゝ｀) < クエリが空のため、保存できません。", "error")
+            else:
+                # ユーザが入力したファイル名を取得
+                user_filename = request.form.get("filename", "").strip()
 
-        # クエリ実行 -> レコードセット取得
-        try:
-            safe_query = db.sanitize_and_validate_sql(sql_query)
-            columns, rows = db.fetch_all(safe_query)
-            # クエリ実行成功のフラッシュメッセージ
-            flash("クエリは正常に実行されました。", "success")
-        # `ValueError`例外をキャッチ
-        except ValueError as e:
-            # 例外発生時のフラッシュメッセージ
-            flash("( ´,_ゝ｀) < " + str(e), "error")
-            columns, rows = [], []
-        except Exception as e:
-            # 例外発生時のフラッシュメッセージ
-            flash("( ´,_ゝ`) < クエリ実行に失敗しました。", "error")
-            columns = FAILED_COLUMNS
-            rows = FAILED_ROWS.copy()
-            # エラー情報を追加
-            rows.append(["原因はたぶん……", str(e)[:200] + "..."])
-        # return redirect(url_for("index"))
+                if user_filename:
+                    # 不正文字（/ \ : * ? " < > |）を`_`に置換
+                    safe_name = re.sub(r'[\/\\:\*\?"<>\|]', '_', user_filename)
+                else: 
+                    # 未入力の場合はタイムスタンプをファイル名にする
+                    safe_name = f"query_{datetime.now().strftime('%Y%m%d_%H%M%S')}.sql"
+                # 拡張子を追加
+                filename = f"{safe_name}.sql"
+
+                # 保存先パスを取得
+                path = os.path.join(STORAGE_DIR, filename)
+                # ファイルに書き込み
+                with open(path, "w", encoding="utf-8", newline="\n") as f:
+                    # 書き込み時にCRLFをLFに置換
+                    f.write(sql_query.replace("\r\n", "\n"))
+                # フラッシュメッセージをセッションに保存
+                flash(f"クエリを`.sql`ファイルとして保存しました。: {filename}", "success")
+
+            # エディタのクエリをセッションに保存
+            session["last_posted_query"] = sql_query
+            # トップページにリダイレクト
+            return redirect(url_for("index"))
+        elif "execute" in request.form:
+            # クエリ実行 -> レコードセット取得
+            try:
+                safe_query = db.sanitize_and_validate_sql(sql_query)
+                columns, rows = db.fetch_all(safe_query)
+                # クエリ実行成功のフラッシュメッセージ
+                flash("クエリは正常に実行されました。", "success")
+            # `ValueError`例外をキャッチ
+            except ValueError as e:
+                # 例外発生時のフラッシュメッセージ
+                flash("( ´,_ゝ｀) < " + str(e), "error")
+                columns, rows = [], []
+            except Exception as e:
+                # 例外発生時のフラッシュメッセージ
+                flash("( ´,_ゝ`) < クエリ実行に失敗しました。", "error")
+                columns = FAILED_COLUMNS
+                rows = FAILED_ROWS.copy()
+                # エラー情報を追加
+                rows.append(["原因はたぶん……", str(e)[:200] + "..."])
+
     # GETリクエストのとき
     else:
-        sql_query = ""
+        # セッションに保存した直近のクエリをテンプレートに渡す
+        sql_query = session.pop("last_posted_query", "")
         # デフォルトの擬似テーブルを表示
         columns, rows = [DEFAULT_COLUMNS, DEFAULT_ROWS]
 
