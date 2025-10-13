@@ -234,6 +234,10 @@
     gap: 0.5rem;
 }
 
+.form-actions-row input[type="text"] {
+    padding: 0.5em 1em;
+}
+
 /* ===== 実行ボタン ===== */
 .btn {
     display: inline-block;
