@@ -36,6 +36,12 @@
             {% endif %}
         {% endwith %}
         <form class="form form--query" method="post" action="{{ url_for('index') }}">
+            <!-- CodeMirrorラッパーの高さを保持 -->
+            <input 
+                type="hidden" 
+                name="sql_query_height"
+                id="sql_query_height" 
+            /> 
             <!-- CodeMirrorをdivでラップ -->
             <div id="sql_query_wrapper" class="cm-wrapper">
                 <textarea
