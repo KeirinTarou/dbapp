@@ -24,7 +24,11 @@
         </div>
     </section>
 
-    <section class="section section--query">
+    <section 
+        class="section section--query" 
+        id="query_editor"
+        {% if scroll_to_editor %}data-scroll="true"{% endif %}
+    >
         <h2 class="heading heading--lg">クエリを入力</h2>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
