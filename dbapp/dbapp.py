@@ -1,7 +1,7 @@
 from flask import (
     Flask, render_template, abort, request, flash, redirect, 
     url_for, session)
-import pyodbc
+# import pyodbc
 import db.queries as db
 import re
 from datetime import datetime
@@ -74,6 +74,8 @@ def index():
 
             # エディタのクエリをセッションに保存
             session["last_posted_query"] = sql_query
+            # セッションにスクロールフラグを立てる
+            session["scroll_to_editor"] = True
             # トップページにリダイレクト
             return redirect(url_for("index"))
         elif "execute" in request.form:
@@ -95,6 +97,9 @@ def index():
                 rows = FAILED_ROWS.copy()
                 # エラー情報を追加
                 rows.append(["原因はたぶん……", str(e)[:200] + "..."])
+
+            # セッションにスクロールフラグを立てる
+            session["scroll_to_editor"] = True
 
     # GETリクエストのとき
     else:
