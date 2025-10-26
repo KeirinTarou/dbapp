@@ -184,6 +184,23 @@
     transform: translateY(0);
 }
 
+/* ===== テーブル構造結果表示テーブル ===== */
+.table-container {
+    max-width: 640px;
+    min-width: 400px;
+    margin-top: 1em;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 0.5em;
+    background: #fafafa;
+}
+
+.table--structure th {
+    text-align: left;
+    background: #333;
+    color: #fff;
+}
+
 /* ===== ページヘッダー ===== */
 .page-header {
     display: flex;
