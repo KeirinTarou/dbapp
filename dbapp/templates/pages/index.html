@@ -13,13 +13,14 @@
 
         <div class="pill-list">
             {% for table_name in table_names %}
-                <a 
-                    href="{{ url_for('show_table_structure', table_name=table_name) }}" 
+                <button 
+                    type="button" 
                     class="pill pill--{{ loop.index0 % 6 }}"
+                    data-table=""{{ table_name }}
                     title="{{ table_name }}テーブルの構造を表示します。"
                 >
                     {{ table_name }}
-                </a>
+                </button>
             {% endfor %}
         </div>
     </section>
