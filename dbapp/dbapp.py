@@ -124,6 +124,20 @@ def index():
         scroll_to_editor=scroll_to_editor
     )
 
+# 各テーブルの構造データ（JSON）を返すWeb API
+@app.route("/api/table/<table_name>")
+def api_table_structure(table_name):
+    allowed_tables = db.TABLE_NAMES
+    if table_name not in allowed_tables:
+        # JSONとステータスコード（`400`: Bad Request）を返す
+        return {"error": "Invalid table name"}, 400
+
+    fields, values = db.describe_table(table_name)
+    return {
+        "columns": fields, 
+        "rows": values, 
+    }
+
 # 各テーブルの構造表示用ページ
 @app.route("/table/<table_name>")
 def show_table_structure(table_name):
