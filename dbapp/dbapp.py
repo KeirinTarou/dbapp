@@ -131,11 +131,12 @@ def api_table_structure(table_name):
     if table_name not in allowed_tables:
         # JSONとステータスコード（`400`: Bad Request）を返す
         return {"error": "Invalid table name"}, 400
-
+    # `fields`: カラム名のリスト
+    # `values`: `Row`オブジェクトのリスト
     fields, values = db.describe_table(table_name)
-    # Row型の`values`を辞書に変換
+    # Rowオブジェクトをリストに変換してリストのリストにする
     rows_list = [list(row) for row in values]
-
+    # クライアントにJSONを返す
     return {
         "columns": fields, 
         "rows": rows_list, 
