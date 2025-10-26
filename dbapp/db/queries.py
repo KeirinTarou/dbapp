@@ -31,7 +31,7 @@ def fetch_all(query: str):
             cur.execute(query)
             # カラム名のリストを取得
             columns = [col[0] for col in cur.description]
-            # レコードセットを取得（`pydoc.Row`オブジェクトのリスト）
+            # レコードセットを取得（`pyodbc.Row`オブジェクトのリスト）
             rows = cur.fetchall()
             # カラム名のリストと`Row`オブジェクトのリストを返却
             return columns, rows
