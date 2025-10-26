@@ -33,7 +33,7 @@
                         // 正しいデータが返ってきた
                         // ヘッダを描画
                         const thead = data.columns.map(col => `<th>${col}</th>`).join("");
-                        $("$table-structure thead").html(`<tr>${thead}</tr>`)
+                        $("#table-structure thead").html(`<tr>${thead}</tr>`)
 
                         // ボディ描画
                         const rows = data.rows.map(row => 
