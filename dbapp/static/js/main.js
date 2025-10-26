@@ -40,7 +40,7 @@
                             `<tr>${row.map(cell => `<td>${cell}</td>`).join("")}</tr>`
                         ).join("");
                         $("#table-structure tbody").html(rows);
-                        $("#table-structure-title").text(`${tableName} テーブル構造`);
+                        $("#table-structure-title").text(`${tableName} テーブルの構造`);
                     })
                     // 取得失敗
                     .fail(function() {
