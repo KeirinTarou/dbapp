@@ -16,6 +16,25 @@
                 $("#table-structure-title").text(`${tableName} テーブル構造を取得中...`);
                 // 非表示の結果表示divを表示
                 $("#table-structure-container").show();
+
+                // 非同期でWeb APIからJSONを取得
+                $.getJSON(url)
+                    // 取得成功
+                    .done(function(data) {
+                        // 通信はできたがエラー
+                        if (data.error) {
+                            $("#table-structure-title").text("( ´,_ゝ`) < エラー");
+                            $("#table-structure thead, #table-structure tbody").empty();
+                            $("#table-structure tbody").append(
+                                `<tr><td colspan="99">${data.error}</td></tr>`
+                            );
+                            return
+                        }
+                    })
+                    // 取得失敗
+                    .fail(function() {
+
+                    });
             });
 
         /* --------------------------------------------------------------------
