@@ -133,9 +133,12 @@ def api_table_structure(table_name):
         return {"error": "Invalid table name"}, 400
 
     fields, values = db.describe_table(table_name)
+    # Row型の`values`を辞書に変換
+    rows_list = [list(row) for row in values]
+
     return {
         "columns": fields, 
-        "rows": values, 
+        "rows": rows_list, 
     }
 
 # 各テーブルの構造表示用ページ
