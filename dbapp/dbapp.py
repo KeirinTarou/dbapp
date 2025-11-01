@@ -87,7 +87,8 @@ def index():
             # クエリ実行 -> レコードセット取得
             try:
                 safe_query = db.sanitize_and_validate_sql(sql_query)
-                columns, rows = db.fetch_all(safe_query)
+                # columns, rows = db.fetch_all(safe_query)
+                columns, rows = db_excel.fetch_all_excel(safe_query)
                 # クエリ実行成功のフラッシュメッセージ
                 flash("クエリは正常に実行されました。", "success")
             # `ValueError`例外をキャッチ
