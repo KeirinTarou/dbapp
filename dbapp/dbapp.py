@@ -139,7 +139,8 @@ def api_table_structure(table_name):
         return {"error": "Invalid table name"}, 400
     # `fields`: カラム名のリスト
     # `values`: `Row`オブジェクトのリスト
-    fields, values = db.describe_table(table_name)
+    # fields, values = db.describe_table(table_name)
+    fields, values = db_excel.describe_table(table_name)
     # Rowオブジェクトをリストに変換してリストのリストにする
     rows_list = [list(row) for row in values]
     # クライアントにJSONを返す
