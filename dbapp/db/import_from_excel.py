@@ -26,7 +26,7 @@ def fetch_all_excel(query: str):
     pythoncom.CoInitialize()
 
     try:
-        excel = win32com.client.Dispatch("Excel.Application")
+        excel = win32com.client.DispatchEx("Excel.Application")
         excel.Visible = False
         wb = excel.Workbooks.Open(EXCEL_PATH)
 
