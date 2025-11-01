@@ -73,3 +73,9 @@ def fetch_all_excel(query: str):
     finally:
         # あとかたづけ
         pythoncom.CoUninitialize()
+
+def describe_table(table_name: str):
+    """ `DESC`コマンドを使ってテーブル構造を取得
+    """
+    query = f"DESC {table_name};"
+    return fetch_all_excel(query)
