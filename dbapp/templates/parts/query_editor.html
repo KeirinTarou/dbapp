@@ -34,6 +34,7 @@
                 placeholder="SELECT文を入力"
             >{{ sql_query | default('', true) }}</textarea>
         </div>
+        {% block query_editor_actions %}
         <div class="form-actions form-actions-row">
             <button 
                 type="submit" 
@@ -57,5 +58,6 @@
                 title="クエリを`.sql`ファイルとして保存します。"
             >保存</button>
         </div>
+        {% endblock %}
     </form>
 </section>
