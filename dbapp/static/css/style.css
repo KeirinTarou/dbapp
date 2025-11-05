@@ -193,6 +193,7 @@
     padding: 0.5em;
     margin-top: 1em;
     background-color: #fff;
+    border-radius: 8px;
 }
 
 .table--structure th {
