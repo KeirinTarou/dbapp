@@ -114,6 +114,28 @@
                     editor.setSize(null, ui.size.height);
                 }
             });
+
+            // クエリコピー機能 & トースト通知
+            $('#copy-query-btn').on('click', async function() {
+                try {
+                    // エディタの値を取得
+                    const text = editor.getValue();
+                    // クリップボードに書き込み
+                    await navigator.clipboard.writeText(text);
+
+                    // トースト通知作成
+                    // トースト通知用divを作成・追加
+                    const toast = $('<div class="toast">Copied!!</div>');
+                    $('body').append(toast);
+                    // 2秒後に除去
+                    setTimeout(() => toast.remove(), 2000);
+                } catch (e) {
+                    console.error('コピー失敗: ', e);
+                    const toast= $('<div class="toast" style="background:#a00">Copy failed...</div>');
+                    $('body').append(toast);
+                    setTimeout(() => toast.remove(), 2000);
+                }
+            });
         
         /* --------------------------------------------------------------------
             スクロール関係
@@ -128,6 +150,7 @@
                     'swing' 
                 );
             }
+
     });
 
 }
