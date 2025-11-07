@@ -3,6 +3,28 @@
 {
 
     $(function() {
+
+        /* --------------------------------------------------------------------
+            ページ読み込み時の処理
+        -------------------------------------------------------------------- */
+            // ローカルストレージにテーブル構造のデータがあれば、
+            // テーブル構造表示領域を描画する
+            $(document).ready(function() {
+                // 最後に見たテーブルのテーブル名を取得
+                const lastViewed = localStorage.getItem("lastViewedTable");
+                // キャッシュデータがあれば、データを取得して描画
+                if (lastViewed) {
+                    const cacheKey = `table:${lastViewed}`;
+                    const cachedData = localStorage.getItem(cacheKey);
+                    if (cachedData) {
+                        const data = JSON.parse(cachedData);
+                        $("#table-structure-wrapper").show();
+                        $("#table-structure-title").text(`${lastViewed} テーブルの構造（キャッシュ）`);
+                        renderTableStructureTable(data);
+                    }
+                }
+            });
+
         /* --------------------------------------------------------------------
             テーブル詳細表示関係
         -------------------------------------------------------------------- */
@@ -13,6 +35,9 @@
                 const cacheKey = `table:${tableName}`;
                 // localStorageにキャッシュされたデータを取得
                 const cachedData = localStorage.getItem(cacheKey);
+
+                // 最後に見たテーブルのテーブル名をローカルストレージにキャッシュ
+                localStorage.setItem("lastViewedTable", tableName);
 
                 // デフォルト非表示の結果表示divを表示
                 $("#table-structure-wrapper").show();
