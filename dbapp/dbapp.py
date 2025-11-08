@@ -3,11 +3,12 @@ from flask import (
     url_for, session)
 from dotenv import load_dotenv
 # import pyodbc
-import db.queries as db
-import db.import_from_excel as db_excel
+import dbapp.db.queries as dbq
+import dbapp.db.import_from_excel as db_excel
 import re
 from datetime import datetime
 import os
+from dbapp.services.file_services import save_query_to_file
 
 # `.env`読み込み
 load_dotenv()
@@ -53,29 +54,15 @@ def index():
         
         # 「保存」ボタンが押された
         if "save" in request.form:
-            if not sql_query:
-                flash("( ´,_ゝ｀) < クエリが空のため、保存できません。", "error")
-            else:
-                # ユーザが入力したファイル名を取得
-                user_filename = request.form.get("filename", "").strip()
+            # ユーザが入力したファイル名を取得
+            user_filename = request.form.get("filename", "").strip()
+            # クエリ保存関数呼び出し
+            filename, message, category = save_query_to_file(
+                sql_query=sql_query, 
+                user_filename=user_filename, 
+                storage_dir=STORAGE_DIR)
 
-                if user_filename:
-                    # 不正文字（/ \ : * ? " < > |）を`_`に置換
-                    safe_name = re.sub(r'[\/\\:\*\?"<>\|]', '_', user_filename)
-                else: 
-                    # 未入力の場合はタイムスタンプをファイル名にする
-                    safe_name = f"query_{datetime.now().strftime('%Y%m%d_%H%M%S')}.sql"
-                # 拡張子を追加
-                filename = f"{safe_name}.sql"
-
-                # 保存先パスを取得
-                path = os.path.join(STORAGE_DIR, filename)
-                # ファイルに書き込み
-                with open(path, "w", encoding="utf-8", newline="\n") as f:
-                    # 書き込み時にCRLFをLFに置換
-                    f.write(sql_query.replace("\r\n", "\n"))
-                # フラッシュメッセージをセッションに保存
-                flash(f"クエリを`.sql`ファイルとして保存しました。: {filename}", "success")
+            flash(f"{message}{filename}", category)
 
             # エディタのクエリをセッションに保存
             session["last_posted_query"] = sql_query
@@ -86,8 +73,8 @@ def index():
         elif "execute" in request.form:
             # クエリ実行 -> レコードセット取得
             try:
-                safe_query = db.sanitize_and_validate_sql(sql_query, allowed_start=("SELECT", "WITH"))
-                columns, rows = db.fetch_all(safe_query)
+                safe_query = dbq.sanitize_and_validate_sql(sql_query, allowed_start=("SELECT", "WITH"))
+                columns, rows = dbq.fetch_all(safe_query)
                 # columns, rows = db_excel.fetch_all_excel(safe_query)
                 # クエリ実行成功のフラッシュメッセージ
                 flash("クエリは正常に実行されました。", "success")
@@ -124,7 +111,7 @@ def index():
         "pages/index.html", 
         columns=columns, 
         rows=rows, 
-        table_names=db.TABLE_NAMES, 
+        table_names=dbq.TABLE_NAMES, 
         sql_query=sql_query, 
         sql_query_height=sql_query_height, 
         scroll_to_editor=scroll_to_editor
@@ -133,13 +120,13 @@ def index():
 # 各テーブルの構造データ（JSON）を返すWeb API
 @app.route("/api/table/<table_name>")
 def api_table_structure(table_name):
-    allowed_tables = db.TABLE_NAMES
+    allowed_tables = dbq.TABLE_NAMES
     if table_name not in allowed_tables:
         # JSONとステータスコード（`400`: Bad Request）を返す
         return {"error": "Invalid table name"}, 400
     # `fields`: カラム名のリスト
     # `values`: `Row`オブジェクトのリスト
-    fields, values = db.describe_table(table_name)
+    fields, values = dbq.describe_table(table_name)
     # fields, values = db_excel.describe_table(table_name)
     # Rowオブジェクトをリストに変換してリストのリストにする
     rows_list = [list(row) for row in values]
@@ -183,7 +170,7 @@ def playground():
         'pages/playground.html', 
         columns=columns, 
         rows=rows, 
-        table_names=db.TABLE_NAMES,
+        table_names=dbq.TABLE_NAMES,
         sql_query=sql_query, 
         sql_query_height=sql_query_height, 
         scroll_to_editor=scroll_to_editor
@@ -193,13 +180,13 @@ def playground():
 @app.route("/table/<table_name>")
 def show_table_structure(table_name):
     # 表示するテーブル名のリスト
-    allowed_tables = db.TABLE_NAMES
+    allowed_tables = dbq.TABLE_NAMES
     # テーブル名がリストになかったら404
     if table_name not in allowed_tables:
         abort(404)
     
     # DESC文実行
-    fields, values = db.describe_table(table_name)
+    fields, values = dbq.describe_table(table_name)
     # fields, values = db_excel.describe_table(table_name)
 
     # テンプレートにデータを投げる
