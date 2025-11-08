@@ -8,7 +8,7 @@ import dbapp.db.import_from_excel as db_excel
 import re
 from datetime import datetime
 import os
-from dbapp.services.file_services import save_query_to_file
+from dbapp.services.file_service import save_query_to_file
 
 # `.env`読み込み
 load_dotenv()
