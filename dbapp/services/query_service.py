@@ -1,11 +1,10 @@
 from dbapp.db import queries as dbq
 from dbapp.db.import_from_excel import fetch_all_excel
 
-# クエリ実行失敗時返却用データ（笑）
-FAILED_COLUMNS = ["( ´,_ゝ`)", "ち～ん（笑）"]
-FAILED_ROWS = [
-    ["残念ｗ", "レコードセットが返らなかったよｗｗｗ"]
-]
+from dbapp.config import (
+    FAILED_COLUMNS, 
+    FAILED_ROWS, 
+)
 
 def exec_query(sql_query, use_excel=False):
     """ SQLクエリを安全に実行し、

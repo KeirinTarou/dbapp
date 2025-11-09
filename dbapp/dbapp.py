@@ -3,6 +3,12 @@ from flask import (
     url_for, session)
 from dotenv import load_dotenv
 # import pyodbc
+
+from dbapp.config import (
+    DEFAULT_EDITOR_HEIGHT, 
+    DEFAULT_COLUMNS, DEFAULT_ROWS, 
+)
+
 import dbapp.db.queries as dbq
 import dbapp.db.import_from_excel as db_excel
 import re
@@ -22,13 +28,6 @@ app.secret_key = "kps"
 # クエリ保存用フォルダを用意
 STORAGE_DIR = os.path.join(os.getcwd(), "storage", "queries")
 os.makedirs(STORAGE_DIR, exist_ok=True)
-
-DEFAULT_COLUMNS = ["( ´_ゝ`)", "クエリ未実行"]
-DEFAULT_ROWS = [
-    ["(･ω･)", "クエリを入力して実行ボタンをクリックしてね！"]
-]
-
-DEFAULT_EDITOR_HEIGHT = 400
 
 # トップページ
 @app.route("/", methods=["GET", "POST"])
