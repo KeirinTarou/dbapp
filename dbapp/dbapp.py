@@ -17,8 +17,10 @@ import os
 from dbapp.services.file_service import save_query_to_file
 from dbapp.services.query_service import exec_query
 from dbapp.services.session_service import (
-    save_query_editor_height, 
-    load_query_editor_height
+    # エディタの高さ関連
+    save_query_editor_height, load_query_editor_height, 
+    # エディタへのスクロールフラグ
+    set_scroll_to_editor, pop_scroll_to_editor, 
 )
 
 # `.env`読み込み
@@ -64,7 +66,7 @@ def index():
             # エディタのクエリをセッションに保存
             session["last_posted_query"] = sql_query
             # セッションにスクロールフラグを立てる
-            session["scroll_to_editor"] = True
+            set_scroll_to_editor(True)
             # トップページにリダイレクト
             return redirect(url_for("index"))
         elif "execute" in request.form:
@@ -73,7 +75,7 @@ def index():
             # フラッシュメッセージ
             flash(message, category)
             # セッションにスクロールフラグを立てる
-            session["scroll_to_editor"] = True
+            set_scroll_to_editor(True)
 
     # GETリクエストのとき
     else:
@@ -85,7 +87,7 @@ def index():
     # エディタの高さ情報をセッションから取り出し
     sql_query_height = load_query_editor_height()
     # エディタへのスクロールフラグをセッションから取り出し
-    scroll_to_editor = session.pop("scroll_to_editor", False)
+    scroll_to_editor = pop_scroll_to_editor()
 
     # レコードセットをテンプレートに渡す
     return render_template(
