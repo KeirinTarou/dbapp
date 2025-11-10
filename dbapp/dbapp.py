@@ -38,6 +38,11 @@ os.makedirs(STORAGE_DIR, exist_ok=True)
 # トップページ
 @app.route("/", methods=["GET", "POST"])
 def index():
+    # ローカル変数初期化
+    sql_query: str = ''
+    columns: list = []
+    rows: list = []
+    scroll_to_editor: bool = False
     # POSTリクエストのとき
     if request.method == "POST":
         # フォームからクエリを取得
