@@ -37,7 +37,11 @@ os.makedirs(STORAGE_DIR, exist_ok=True)
 
 def _exec_sql_query(sql_query, use_excel=False):
     # クエリ実行 -> レコードセット取得
-    columns, rows, message, category = exec_query(sql_query)
+    if use_excel:
+        use_excel = True
+    else:
+        use_excel = False
+    columns, rows, message, category = exec_query(sql_query, use_excel)
     # フラッシュメッセージ
     flash(message, category)
     # セッションにスクロールフラグを立てる
