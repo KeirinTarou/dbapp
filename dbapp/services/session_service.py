@@ -13,3 +13,13 @@ def save_query_editor_height(sql_query_height):
 def load_query_editor_height():
     # セッションの値を返す
     return session.get("sql_query_height", DEFAULT_EDITOR_HEIGHT)
+
+def set_scroll_to_editor(value=True):
+    """ エディタ部分へのスクロールフラグをセット
+    """
+    session["scroll_to_editor"] = value
+
+def pop_scroll_to_editor():
+    """ スクロールフラグを取り出してクリアする
+    """
+    return session.pop("scroll_to_editor", False)
