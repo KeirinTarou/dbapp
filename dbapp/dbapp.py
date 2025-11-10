@@ -50,6 +50,18 @@ def _exec_sql_query(sql_query, page, use_excel=False):
     # レコードセットを返す
     return columns, rows
 
+def _prepare_exec_query(form, page: str):
+    sql_query = form.get("sql_query", "").strip()
+     # CodeMirrorラッパーの高さを保存
+    sql_query_height = request.form.get("sql_query_height")
+    if sql_query_height:
+        # エディタの高さをセッションに保存
+        save_query_editor_height(
+            sql_query_height=sql_query_height, 
+            page=page, 
+        )
+    return sql_query, sql_query_height
+
 # トップページ
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -60,17 +72,8 @@ def index():
     scroll_to_editor: bool = False
     # POSTリクエストのとき
     if request.method == "POST":
-        # フォームからクエリを取得
-        sql_query = request.form.get("sql_query", "").strip()
-
-        # CodeMirrorラッパーの高さを保存
-        sql_query_height = request.form.get("sql_query_height")
-        if sql_query_height:
-            # エディタの高さをセッションに保存
-            save_query_editor_height(
-                sql_query_height=sql_query_height, 
-                page="index", 
-            )
+        # クエリ実行準備
+        sql_query, sql_query_height = _prepare_exec_query(form=request.form, page="index")
         
         # 「保存」ボタンが押された
         if "save" in request.form:
@@ -146,16 +149,8 @@ def playground():
     scroll_to_editor: bool = False
 
     if request.method == 'POST':
-        # エディタのクエリを取得
-        sql_query = request.form.get('sql_query', '')
-        # CodeMirrorラッパーの高さを保存
-        sql_query_height = request.form.get("sql_query_height")
-        if sql_query_height:
-            # エディタの高さをセッションに保存
-            save_query_editor_height(
-                sql_query_height=sql_query_height, 
-                page="playground", 
-            )
+        # クエリ実行準備
+        sql_query, sql_query_height = _prepare_exec_query(form=request.form, page="playground")
         # クエリ実行 -> レコードセット取得
         columns, rows = _exec_sql_query(sql_query=sql_query, page="playground", use_excel=False)
     else:
