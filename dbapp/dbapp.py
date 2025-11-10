@@ -35,6 +35,16 @@ app.secret_key = "kps"
 STORAGE_DIR = os.path.join(os.getcwd(), "storage", "queries")
 os.makedirs(STORAGE_DIR, exist_ok=True)
 
+def _exec_sql_query(sql_query, use_excel=False):
+    # クエリ実行 -> レコードセット取得
+    columns, rows, message, category = exec_query(sql_query)
+    # フラッシュメッセージ
+    flash(message, category)
+    # セッションにスクロールフラグを立てる
+    set_scroll_to_editor(True)
+    # レコードセットを返す
+    return columns, rows
+
 # トップページ
 @app.route("/", methods=["GET", "POST"])
 def index():
