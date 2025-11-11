@@ -311,7 +311,7 @@
     margin-top: 0.5em;
 }
 
-/* 1段目のボタン感覚 */
+/* 1段目のボタン間隔 */
 .form-actions-row:first-child .btn, 
 .form-actions-row:first-child .btn--clear {
     margin-left: 0.5rem;
@@ -443,6 +443,67 @@
     overflow: hidden;   /* CodeMirror内でスクロール */
 }
 
+/* ===== 練習問題一覧部分 ===== */
+.section--practice-list {
+    background-color: #fff8f5;
+}
+
+.chapter {
+    margin-top: 1.5rem;
+    padding: 1rem 1.2rem;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05)
+}
+
+/* 章タイトル */
+.chapter-title {
+    margin-bottom: 0.5rem;
+    color: #ff6f91;
+}
+
+/* 問題リスト全体 */
+.practice-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* 各問題アイテム */
+.practice-item {
+    margin-bottom: 0.4rem;
+}
+
+/* リンク（各問題へのリンク） */
+.practice-item a {
+    display: inline-block;
+    width: 100%;
+    padding: 0.6rem 0.9rem;
+    border-radius: 8px;
+    background-color: #f0f7ff;
+    color: #0b4d8a;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition:
+        background-color 0.3s ease, 
+        transform 0.3 ease, 
+}
+
+/* ホバー時のアクセント */
+.practice-item a:hover {
+    background-color: #d9ecff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* クリック時 */
+.practice-item a:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05)
+}
+
+
 /* ===== フラッシュメッセージ（ul.messages） ===== */
 .messages {
   list-style: none;
@@ -514,4 +575,8 @@
     .heading--xl { font-size: 1.5rem; }
     .heading--lg { font-size: 1.2rem; }
     .form textarea { min-height: 100px; }
+    .chapter {
+        padding: 0.8rem 1rem;
+        font-size: 0.95rem;
+    }
 }
