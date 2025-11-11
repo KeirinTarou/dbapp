@@ -147,6 +147,35 @@ def practices():
         dummy_text="ち～ん（笑）"
     )
 
+# 練習問題のページ
+@app.route('/practices/<int:chapter>/<int:number>')
+def practice_detail(chapter, number):
+    # ダミー実装
+    question_number:str = ""
+    if number == 0:
+        question_number = "書いてみよう"
+    else:
+        question_number = "第" + str(number) + "問"
+    
+    # 問題を取得
+    questions = ["ち～ん（笑）", "( ´,_ゝ｀)ﾌﾟｯ"]
+    question = questions[number]
+
+    # 結果セット
+    columns = DEFAULT_COLUMNS
+    rows = DEFAULT_ROWS
+
+    return render_template(
+        "pages/practices/practice_detail.html", 
+        chapter=chapter, 
+        question_number=question_number, 
+        question=question, 
+        table_names=dbq.TABLE_NAMES, 
+        columns=columns, 
+        rows=rows
+    )
+
+
 # クエリを実行するだけのページ
 @app.route('/playground', methods=['GET', 'POST'])
 def playground():
