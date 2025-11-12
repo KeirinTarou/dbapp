@@ -36,7 +36,7 @@ app.secret_key = "kps"
 STORAGE_DIR = os.path.join(os.getcwd(), "storage", "queries")
 os.makedirs(STORAGE_DIR, exist_ok=True)
 
-def _exec_sql_query(sql_query, page, use_excel=False) -> tuple[list, list]:
+def _exec_sql_query(sql_query: str, page: str, use_excel: bool=False) -> tuple[list, list]:
     # クエリ実行 -> レコードセット取得
     if use_excel:
         use_excel = True
