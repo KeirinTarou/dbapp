@@ -448,7 +448,7 @@
     background-color: #fff8f5;
 }
 
-.chapter {
+.section {
     margin-top: 1.5rem;
     padding: 1rem 1.2rem;
     border-radius: 10px;
@@ -457,7 +457,7 @@
 }
 
 /* 章タイトル */
-.chapter-title {
+.section-title {
     margin-bottom: 0.5rem;
     color: #ff6f91;
 }
