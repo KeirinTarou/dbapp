@@ -1,27 +1,41 @@
 {% extends 'base.html' %}
-{% block title %}Playground{% endblock %}
+{% block title %}練習問題{% endblock %}
 {% block contents %}
 <main class="page page--sql">
     {% include "parts/intro/practices_intro.html" %}
 
     <!-- 練習問題リスト -->
-    <section class="section section--practice-list">
-        <h2 class="heading heading--lg">問題一覧</h2>
-        <article class="chapter">
-            <h3 class="heading heading--md chapter-title">第5章</h3>
-            <ul class="practice-list">
-                <li class="practice-item">
-                    <a href="{{ url_for('practice_detail', chapter=5, number=0) }}">
-                        書いてみよう
-                    </a>
-                </li>
-                <li class="practice-item">
-                    <a href="{{ url_for('practice_detail', chapter=5, number=1) }}">
-                        第1問
-                    </a>
-                </li>
-            </ul>
-        </article>
-    </section>
+    {% for chapter in chapters %}
+        <section class="section section--practice-list">
+            <h2 class="heading heading--lg">
+                第{{ chapter.chapter_number }}章 {{ chapter.chapter_title }}
+            </h2>
+            {% for section in chapter.sections %}
+                <article class="section">
+                    <h3 class="heading heading--md section-title">
+                        【その{{ section.section_number }}】{{ section.section_title }}
+                    </h3>
+                    <ul class="practice-list">
+                        {% for q in section.questions %}
+                            <li class="practice-item">
+                                <a href="{{ url_for(
+                                    'practice_detail', 
+                                    chapter=q.ChapterNumber, 
+                                    section=q.SectionNumber, 
+                                    number=q.QuestionNumber) }}"
+                                >
+                                    {% if q.QuestionNumber == 0 %}
+                                        書いてみよう
+                                    {% else %}
+                                        第{{ q.QuestionNumber }}問
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </article>
+            {% endfor %}
+        </section>
+    {% endfor %}
 </main>
 {% endblock %}
