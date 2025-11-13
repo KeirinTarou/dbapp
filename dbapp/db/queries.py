@@ -17,6 +17,27 @@ TEST_QUERY_2 = """
 DESC Employees;
 """
 
+ALL_PRACTICES = """
+SELECT
+    c.ChapterNumber
+    , c.ChapterTitle
+    , s.SectionNumber
+    , s.SectionTitle
+    , q.*
+FROM
+    Questions AS q
+    JOIN
+        Chapters AS c
+        ON c.ChapterID = q.ChapterID
+    JOIN
+        Sections AS s
+        ON s.SectionID = q.SectionID
+ORDER BY
+    c.ChapterNumber ASC
+    , s.SectionNumber ASC
+    , q.QuestionNumber ASC
+"""
+
 TABLE_NAMES = [
     "BelongTo", "Categories", "CustomerClasses", "Customers", 
     "Departments", "Employees", "Prefecturals", "Products", 
