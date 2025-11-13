@@ -33,10 +33,22 @@ def normalize_value(v):
         return v.strftime('%Y-%m-%d %H:%M:%S')
     return v
 
-def fetch_all_excel(query: str):
+def fetch_all_excel(query: str, params=None):
     """ Excel経由でDBからレコードセットを取得
         (columns, rows)の形で結果を返却
     """
+    # プレースホルダがあるときはパラメータを埋め込む
+    if params:
+        # `params`をアンパックして`?`の部分に順番に埋め込む
+        # `params`が`("foo", "bar", 2000)`だったら、
+        # `"{} {} {}".format(*["foo", "bar", 2000])`となり、
+        # `"{} {} {}".format("foo", "bar", 2000)`と同義となる
+        # 結果、`query`に3つあるはずの`?`に、
+        # 順に"foo", "bar", 2000が埋め込まれる
+        query = query.replace("?", "{}").format(*[
+            f"'{p}'" if isinstance(p, str) else p for p in params
+        ])
+
     # Flaskのスレッド内でCOMを初期化
     pythoncom.CoInitialize()
 

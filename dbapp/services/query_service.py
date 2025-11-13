@@ -6,7 +6,7 @@ from dbapp.config import (
     FAILED_ROWS, 
 )
 
-def exec_query(sql_query: str, use_excel: bool=False):
+def exec_query(sql_query: str, params=None, use_excel: bool=False):
     """ SQLクエリを安全に実行し、
         (columns, rows, message, category)を返す
     """
@@ -20,10 +20,10 @@ def exec_query(sql_query: str, use_excel: bool=False):
         # データ取得
         # Excelを踏み台にする
         if use_excel:
-            columns, rows = fetch_all_excel(safe_query)
+            columns, rows = fetch_all_excel(safe_query, params)
         # 通常のDB接続
         else:
-            columns, rows = dbq.fetch_all(safe_query)
+            columns, rows = dbq.fetch_all(safe_query, params)
         
         # 成功メッセージ
         return columns, rows, "クエリは正常に実行されました。", "success"
