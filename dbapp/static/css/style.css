@@ -43,7 +43,7 @@
 .heading--md { font-size: 1.2rem; color: #6cda8d; }
 
 .text { margin: 0; }
-.text--lead { font-size: 1.1rem; color: #555; }
+.text--lead { font-size: 1.1rem; font-weight: bold; color: #555; }
 
 /* ===== フォーム ===== */
 .form textarea {
@@ -503,6 +503,14 @@
     box-shadow: 0 1px 2px rgba(0,0,0,0.05)
 }
 
+/* ===== 問題文表示領域 ===== */
+.practice-question {
+    margin-top: 0.5rem;
+    padding: 1rem;
+    background-color: #fdd;
+    border-radius: 8px;
+    border: solid 2px #6fafff;
+}
 
 /* ===== フラッシュメッセージ（ul.messages） ===== */
 .messages {
