@@ -10,6 +10,8 @@ def exec_query(sql_query: str, params=None, use_excel: bool=False):
     """ SQLクエリを安全に実行し、
         (columns, rows, message, category)を返す
     """
+    if params is None:
+        params = ()
     try:
         # 構文チェック & 無害化
         safe_query = dbq.sanitize_and_validate_sql(

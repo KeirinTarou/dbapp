@@ -67,12 +67,14 @@ TABLE_NAMES = [
     "Salary", "Sales"
 ]
 
-def fetch_all(query: str):
+def fetch_all(query: str, params=None):
     """ クエリを渡して全件取得する
     """
+    if params is None:
+        params = ()
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(query)
+            cur.execute(query, params)
             # カラム名のリストを取得
             columns = [col[0] for col in cur.description]
             # レコードセットを取得（`pyodbc.Row`オブジェクトのリスト）
