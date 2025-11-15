@@ -1,6 +1,8 @@
 from dbapp.db.connection import get_connection
 import re
 
+from typing import Tuple
+
 TEST_QUERY = """
 SELECT
     *
@@ -86,6 +88,15 @@ TABLE_NAMES = [
     "Salary", "Sales"
 ]
 
+import sqlparse
+from sqlparse.sql import Identifier, TokenList
+from sqlparse.tokens import Keyword, DML, DDL
+FORBIDDEN_KEYWORDS = {
+    "INSERT", "UPDATE", "DELETE", "DROP", "ALTER", 
+    "CREATE", "TRUNCATE", "GRANT", "REVOKE", "MERGE", 
+    "REPLACE"
+}
+
 def fetch_one(query: str, params=None):
     if params is None:
         params = ()
@@ -134,25 +145,69 @@ def sanitize_sql(sql_query: str) -> str:
     # 前後の空白除去
     return sql.strip()
 
+def contains_forbidden_keywords(sql_query: str) -> bool:
+    """ 禁止キーワードが含まれているかどうかを返す
+    """
+    parsed = sqlparse.parse(sql_query)
+
+    def check_tokens(tokens):
+        for token in tokens:
+            if getattr(token, "is_group", False):
+                if check_tokens(token.tokens):
+                    return True
+            elif token.ttype in (Keyword, DML, DDL):
+                if token.value.upper() in FORBIDDEN_KEYWORDS:
+                    return True
+        return False
+    
+    for stmt in parsed:
+        if check_tokens(stmt.tokens):
+            return True
+    return False
+
+def is_multi_statement(sql_query: str) -> bool:
+    """ 実質的なSQL文が2つ以上あるかどうか
+    """
+    statements = [stmt for stmt in sqlparse.split(sql_query) if stmt.strip()]
+    return len(statements) > 1
+
+def _validate_sql_core(sql_query: str, allowed_start=("SELECT", )) -> Tuple[bool, str, str]:
+    """ 検査結果とエラーメッセージ、サニタイズ済みクエリを返す
+        合格時はTrueとNone、サニタイズ済みクエリを返す
+    """
+    clean_sql = sanitize_sql(sql_query)
+
+    if not clean_sql:
+        return False, "有効なクエリがありません。", clean_sql
+
+    upper = clean_sql.upper()
+    if not any(upper.startswith(kw) for kw in allowed_start):
+        return False, f"{', '.join(allowed_start)}文のみ実行可能です。", clean_sql
+    
+    if contains_forbidden_keywords(clean_sql):
+        return False, "書き込み系・DDL文は使用禁止です。", clean_sql
+    
+    if is_multi_statement(sql_query=clean_sql):
+        return False, "マルチステートメントは使用禁止です。", clean_sql 
+
+    return True, None, clean_sql
+
 def valid_sql(sql_query: str, allowed_start=("SELECT", )) -> bool:
     """ SQL文が安全かどうかを判定する
         先頭キーワードが`allowed_start`のいずれかであることをチェック
+        禁止キーワードが含まれていないかチェック
         コメントや空白は無視して判定
     """
-    clean_sql = sanitize_sql(sql_query)
-    if not clean_sql:
-        return False
-    for kw in allowed_start:
-        if clean_sql.upper().startswith(kw):
-            return True
-    # ここにたどり着いたということは`allowed_start`で始まらないということ
-    return False
+    ok, _, _ = _validate_sql_core(sql_query=sql_query, allowed_start=allowed_start)
+    return ok
 
 def sanitize_and_validate_sql(sql_query: str, allowed_start=("SELECT", )) -> str:
     """ サニタイズとバリデーションをまとめて行う
         不正があれば例外をスロー
     """
-    clean_sql = sanitize_sql(sql_query)
-    if not valid_sql(clean_sql, allowed_start):
-        raise ValueError(f"{', '.join(allowed_start)} 文のみ実行可能です。")
+    ok, message, clean_sql = _validate_sql_core(sql_query=sql_query, allowed_start=allowed_start)
+    
+    if not ok:
+        raise ValueError(message)
+
     return clean_sql
