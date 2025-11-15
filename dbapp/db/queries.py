@@ -1,7 +1,11 @@
 from dbapp.db.connection import get_connection
 import re
 
-from typing import Tuple
+from typing import (
+    Any, Dict, Iterable, List, Optional, 
+    Sequence, Tuple
+)
+import pyodbc
 
 TEST_QUERY = """
 SELECT
@@ -97,7 +101,7 @@ FORBIDDEN_KEYWORDS = {
     "REPLACE"
 }
 
-def fetch_one(query: str, params=None):
+def fetch_one(query: str, params: Optional[Sequence[Any]]=None) -> Optional[Dict[str, Any]]:
     if params is None:
         params = ()
     with get_connection() as conn:
@@ -114,8 +118,9 @@ def fetch_one(query: str, params=None):
             # 取得した1件のレコードをdictにして返す
             return dict(zip(columns, row))
 
-def fetch_all(query: str, params=None):
+def fetch_all(query: str, params: Optional[Sequence[Any]]=None) -> Tuple[List[str], List[pyodbc.Row]]:
     """ クエリを渡して全件取得する
+        カラム名（str）のリスト, Rowオブジェクトのリストを返す
     """
     if params is None:
         params = ()
@@ -129,7 +134,7 @@ def fetch_all(query: str, params=None):
             # カラム名のリストと`Row`オブジェクトのリストを返却
             return columns, rows
 
-def describe_table(table_name: str):
+def describe_table(table_name: str) -> Tuple[List[str], List[pyodbc.Row]]:
     """ `DESC`コマンドを使ってテーブル構造を取得
     """
     query = f"DESC {table_name};"
