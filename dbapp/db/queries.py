@@ -61,11 +61,47 @@ WHERE
 ;
 """
 
+SELECT_ANSWER_QUERY = """
+    SELECT
+        q.AnswerQuery
+        , q.CheckMode
+    FROM
+        Questions AS q
+        JOIN
+            Chapters AS c
+            ON c.ChapterID = q.ChapterID
+        JOIN
+            Sections AS s
+            ON s.SectionID = q.SectionID
+    WHERE
+        c.ChapterNumber = ?
+        AND s.SectionNumber = ?
+        AND q.QuestionNumber = ?
+    ;
+"""
+
 TABLE_NAMES = [
     "BelongTo", "Categories", "CustomerClasses", "Customers", 
     "Departments", "Employees", "Prefecturals", "Products", 
     "Salary", "Sales"
 ]
+
+def fetch_one(query: str, params=None):
+    if params is None:
+        params = ()
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(query, params)
+
+            columns = [col[0] for col in cur.description]
+            row = cur.fetchone()
+
+            # 結果セットが返らなかったらNone
+            if row is None:
+                return None
+        
+            # 取得した1件のレコードをdictにして返す
+            return dict(zip(columns, row))
 
 def fetch_all(query: str, params=None):
     """ クエリを渡して全件取得する
