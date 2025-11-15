@@ -231,9 +231,23 @@ def judge_result():
     #   併せてエディタの高さをセッションに保存
     user_query, editor_height = _prepare_exec_query(form=request.form, page="practice")
 
+
     # クエリの実行結果を判定
     
+    result = True
+    user_columns = []
+    user_rows = []
+    answer_columns = []
+    answer_rows = []
 
+    return render_template(
+        "pages/practices/judge_result.html", 
+        result=result, 
+        user_columns=user_columns, 
+        user_rows=user_rows, 
+        answer_columns=answer_columns, 
+        answer_rows=answer_rows
+    )
 
 # クエリを実行するだけのページ
 @app.route('/playground', methods=['GET', 'POST'])
